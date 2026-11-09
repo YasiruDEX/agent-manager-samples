@@ -1,0 +1,63 @@
+version: 2
+
+# All sample version updates share one PR, including major, minor, and patch.
+# The group schedule is inherited by every ecosystem entry below.
+multi-ecosystem-groups:
+  sample-dependencies:
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "09:00"
+      timezone: "Asia/Colombo"
+
+# Security updates are managed separately by GitHub and can raise extra PRs.
+# Keep target-branch unset so security updates use the default branch.
+updates:
+  - package-ecosystem: "pip"
+    directories:
+      - "/a2a-agent"
+      - "/crewai-agent"
+      - "/customer-support-agent"
+      - "/hotel-booking-agent/agent"
+      - "/hotel-booking-agent/services/hotel_api"
+      - "/insurance-support-agent/agent"
+      - "/insurance-support-agent/mcp-server"
+      - "/it-helpdesk-agent"
+      - "/manual-instrumentation-agent"
+    patterns: ["*"]
+    multi-ecosystem-group: "sample-dependencies"
+    # The OpenTelemetry SQLAlchemy instrumentor supports only < 2.1.0.
+    # update-types, unlike versions, does not block security updates.
+    ignore:
+      - dependency-name: "sqlalchemy"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+    groups:
+      sample-pip-security:
+        applies-to: "security-updates"
+        patterns: ["*"]
+
+  - package-ecosystem: "npm"
+    directory: "/insurance-support-agent/web"
+    patterns: ["*"]
+    multi-ecosystem-group: "sample-dependencies"
+    groups:
+      sample-npm-security:
+        applies-to: "security-updates"
+        patterns: ["*"]
+
+  - package-ecosystem: "nuget"
+    directory: "/dotnet-agent"
+    patterns: ["*"]
+    multi-ecosystem-group: "sample-dependencies"
+    groups:
+      sample-nuget-security:
+        applies-to: "security-updates"
+        patterns: ["*"]
+
+  - package-ecosystem: "docker"
+    directories:
+      - "/dotnet-agent"
+      - "/insurance-support-agent/agent"
+      - "/insurance-support-agent/mcp-server"
+    patterns: ["*"]
+    multi-ecosystem-group: "sample-dependencies"

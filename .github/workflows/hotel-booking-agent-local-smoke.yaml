@@ -1,0 +1,36 @@
+name: Hotel Booking Local Smoke Checks
+on:
+  pull_request:
+    paths:
+      - 'hotel-booking-agent/**'
+      - '.github/workflows/hotel-booking-agent-local-smoke.yaml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: hotel-booking-agent-local-smoke-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  smoke:
+    name: Hotel Booking local smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Run smoke test
+        env:
+          PYTHON: python
+          REPORTS: ${{ runner.temp }}/smoke-reports
+        run: bash hotel-booking-agent/scripts/smoke_test.sh
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: local-smoke-hotel-booking-agent
+          path: ${{ runner.temp }}/smoke-reports/

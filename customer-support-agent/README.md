@@ -1,0 +1,98 @@
+# Customer Support Agent - Deployment Guide
+
+## Overview
+
+The Customer Support Agent is an AI-powered customer service assistant that helps users with travel-related inquiries including flights, bookings, hotels, and car rentals. Built with LangGraph and FastAPI, this agent can search for information and simulate travel bookings.
+
+**Based on**: [LangGraph Customer Support Tutorial](https://langchain-ai.github.io/langgraph/tutorials/customer-support/customer-support/#example-conversation)
+
+## Prerequisites
+
+Before deploying this agent, ensure you have:
+
+- **OpenAI API key** for the chat model.
+- **Optional Tavily API key** for public web searches, such as travel advisories and destination information.
+
+Flights, hotels, rentals, excursions, and ticket operations use fictional
+in-memory data. Booking changes belong to the current chat session and reset
+when the service restarts. The app needs no database.
+
+## Deployment Instructions
+
+### Step 1: Access Agent Manager
+
+1. Navigate to the **Default** project
+2. Click **"Add Agent"**
+3. Select **Platform-Hosted Agent** Card
+
+### Step 2: Configure Agent Details
+
+Fill in the agent creation form with these exact values:
+
+| Field                 | Value                                                   |
+| --------------------- | ------------------------------------------------------- |
+| **Display Name**      | `Support Agent`                                         |
+| **Description**       | `AI-powered customer support agent for travel services` |
+| **GitHub Repository** | `https://github.com/wso2/agent-manager-samples`                 |
+| **Branch**            | `main`                                                  |
+| **App Path**          | `customer-support-agent`                        |
+| **Language**          | `Python`                                                |
+| **Language Version**  | `3.11`                                                  |
+| **Start Command**     | `python main.py`                                        |
+| **Port**              | `8000`                                                  |
+
+### Step 3: Select Agent Interface
+
+- Choose **"Chat Agent"** as the agent interface type
+
+### Step 4: Configure Environment Variables
+
+Add the following environment variables in the create form:
+
+```env
+OPENAI_API_KEY=<your-openai-api-key>
+# Optional
+TAVILY_API_KEY=<your-tavily-api-key>
+```
+
+### Step 5: Deploy the Agent
+
+1. Review all configuration details
+2. Click **"Deploy"**
+3. Wait for the build to complete (typically 2-5 minutes)
+
+## Testing Your Agent
+
+### Step 1: Navigate to Chat Interface
+
+Click on the **"Try It"** section on the left navigation.
+
+### Step 2: Test Sample Interactions
+
+Try these sample questions in the chat interface:
+
+**Flight Inquiries:**
+
+```text
+What demo flights do I have booked?
+Find an alternate flight from Zurich (ZRH) to Geneva (GVA).
+Move my demo ticket to flight DEMO102.
+Cancel my demo ticket.
+```
+
+**Hotel Search:**
+
+```text
+Find a demo hotel in Geneva for next week.
+```
+
+**Public web search (with Tavily configured):**
+
+```text
+Search the web for current public transport options from Geneva airport to the city center.
+```
+
+### Step 3: Observe Traces
+
+1. Click on the **"Observability"** tab on left navigation and select **Traces**
+2. View traces

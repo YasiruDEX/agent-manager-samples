@@ -1,0 +1,35 @@
+name: IT Helpdesk Local Smoke Checks
+on:
+  pull_request:
+    paths:
+      - 'it-helpdesk-agent/**'
+      - '.github/workflows/it-helpdesk-agent-local-smoke.yaml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: it-helpdesk-agent-local-smoke-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  smoke:
+    name: IT Helpdesk local smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install dependencies and run HTTP smoke
+        env:
+          PYTHON: python
+        run: bash it-helpdesk-agent/scripts/smoke_test.sh --reports "$RUNNER_TEMP/smoke-reports"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: local-smoke-it-helpdesk-agent
+          path: ${{ runner.temp }}/smoke-reports/

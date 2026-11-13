@@ -51,7 +51,7 @@ MAX_VALIDATION_ERRORS = 16
 @app.exception_handler(RequestValidationError)
 async def request_validation_error_handler(_request: Request, exc: RequestValidationError) -> JSONResponse:
     return JSONResponse(
-        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+        status_code=422,
         content={"detail": jsonable_encoder(exc.errors()[:MAX_VALIDATION_ERRORS])},
     )
 
